@@ -1,0 +1,161 @@
+import { loadUser } from '../user';
+import { httpGet } from '../http';
+import health from "../../index";
+import { Bowman, TYPES } from '../app';
+import { Swordsman } from '../app';
+import { Magician } from '../app';
+import { Zombie } from '../app';
+import { Undead } from '../app';
+import { Daemon } from '../app';
+import { Character } from '../app';
+
+
+jest.mock('../http');
+
+beforeEach(() => {
+  jest.resetAllMocks();
+});
+
+test('should call loadUser once', () => {
+  httpGet.mockReturnValue(JSON.stringify({}));
+
+  const response = loadUser(1);
+  expect(response).toEqual({});
+  expect(httpGet).toHaveBeenCalledWith('http://server:8080/users/1');
+});
+
+
+const dataList = [
+  [{ name: "Маг", health: 100 }, "healthy"],
+  [{ name: "Маг", health: 51 }, "healthy"],
+  [{ name: "Маг", health: 50 }, "wounded"],
+  [{ name: "Маг", health: 49 }, "wounded"],
+  [{ name: "Маг", health: 15 }, "wounded"],
+  [{ name: "Маг", health: 14 }, "critical"],
+  [{ name: "Маг", health: 1 }, "critical"],
+];
+
+test.each(dataList)("testing function health", (object, expented) => {
+  let result = health(object);
+  expect(result).toEqual(expented);
+});
+
+test("testing Bowman", () => {
+  const result = new Bowman("Bow", "Bowman")
+  const ans = {
+      name: "Bow",
+      type: "Bowman",
+      health: 100,
+      level: 1,
+      attack: 25,
+      defence: 25,
+  }
+  expect(result).toEqual(ans)
+})
+
+test("testing Swordsman", () => {
+  const result = new Swordsman("Swo", "Swordsman")
+  const ans = {
+      name: "Swo",
+      type: "Swordsman",
+      health: 100,
+      level: 1,
+      attack: 40,
+      defence: 10,
+  }
+  expect(result).toEqual(ans)
+})
+
+test("testing Magician", () => {
+  const result = new Magician("Magician", "Magician")
+  const ans = {
+      name: "Magician",
+      type: "Magician",
+      health: 100,
+      level: 1,
+      attack: 10,
+      defence: 40,
+  }
+  expect(result).toEqual(ans)
+})
+
+test("testing Undead", () => {
+  const result = new Undead("Undead", "Undead")
+  const ans = {
+      name: "Undead",
+      type: "Undead",
+      health: 100,
+      level: 1,
+      attack: 25,
+      defence: 25,
+  }
+  expect(result).toEqual(ans)
+})
+
+test("testing Zombie", () => {
+  const result = new Zombie("Zombie", "Zombie")
+  const ans = {
+      name: "Zombie",
+      type: "Zombie",
+      health: 100,
+      level: 1,
+      attack: 40,
+      defence: 10,
+  }
+  expect(result).toEqual(ans)
+})
+
+test("testing Daemon", () => {
+  const result = new Daemon("Daemon", "Daemon")
+  const ans = {
+      name: "Daemon",
+      type: "Daemon",
+      health: 100,
+      level: 1,
+      attack: 10,
+      defence: 40,
+  }
+  expect(result).toEqual(ans)
+})
+
+
+test("testing CharacterError1", () => {
+  expect(() => new Character("D", "Daemon")).toThrow("Имя должно быть строкой не короче 2 и не длиннее 10 символов");
+});
+
+test("testing CharacterError2", () => {
+  expect(() => new Character("Daemon", "Durmon")).toThrow(`Тип должен быть строкой и может принимать значения`);
+});
+
+test("testing Daemon", () => {
+  const result = new Daemon("Daemon", "Daemon").levelUp()
+  const ans = {
+      name: "Daemon",
+      type: "Daemon",
+      health: 100,
+      level: 2,
+      attack: 12,
+      defence: 48,
+  }
+  expect(result).toEqual(ans)
+})
+
+test("testing Daemon", () => {
+  const result = new Daemon("Daemon", "Daemon").damage(1)
+  const ans = {
+      name: "Daemon",
+      type: "Daemon",
+      health: 99.4,
+      level: 1,
+      attack: 10,
+      defence: 40,
+  }
+  expect(result).toEqual(ans)
+})
+
+test("testing CharacterError3", () => {
+  const result = new Character("Daemon", "Daemon")
+  result.damage(1000)
+  
+  expect(() => result.damage(100).toThrow('Game over'));
+})
