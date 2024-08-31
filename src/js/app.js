@@ -20,17 +20,17 @@ export class Character {
     constructor (name, type) {
         if (typeof name !== 'string' || name.length < MIN_LENGTH || name.length > MAX_LENGTH) {
             throw new Error('Имя должно быть строкой не короче 2 и не длиннее 10 символов');
-          };
+          }
         if (typeof type !== 'string' || !TYPES.includes(type)) {
             throw new Error(`Тип должен быть строкой и может принимать значения ${TYPES.join(", ")}`);
-        };
+        }
         this.name = name;
         this.type = type;
         this.health = 100;
         this.level = 1;
         this.attack = undefined;
         this.defence = undefined;
-    };
+    }
     levelUp() {
         if (this.health > 0) {
           this.level += 1;
@@ -46,13 +46,16 @@ export class Character {
     damage(points) {
         if (this.health > 0) {
           this.health -= points * (1 - this.defence / 100);
+          if (this.health <= 0) {
+            throw new Error("Game Over");
+          }
         }
         else {
           throw new Error("Game Over");
         }
         return this;
     }
-};    
+}   
 
 // Bowman: 25/25
 // Swordsman: 40/10
@@ -67,7 +70,7 @@ export class Bowman extends Character {
     this.attack = 25;
     this.defence = 25;
   }
-};
+}
 
 export class Swordsman extends Character {
   constructor(name, type) {
@@ -75,7 +78,7 @@ export class Swordsman extends Character {
     this.attack = 40;
     this.defence = 10;
   }
-};
+}
 
 export class Magician extends Character {
   constructor(name, type) {
@@ -83,7 +86,7 @@ export class Magician extends Character {
     this.attack = 10;
     this.defence = 40;
   }
-};
+}
 
 export class Undead extends Character {
   constructor(name, type) {
@@ -91,7 +94,7 @@ export class Undead extends Character {
     this.attack = 25;
     this.defence = 25;
   }
-};
+}
 
 export class Zombie extends Character {
   constructor(name, type) {
@@ -99,7 +102,7 @@ export class Zombie extends Character {
     this.attack = 40;
     this.defence = 10;
   }
-};
+}
 
 export class Daemon extends Character {
   constructor(name, type) {
@@ -107,7 +110,7 @@ export class Daemon extends Character {
     this.attack = 10;
     this.defence = 40;
   }
-};
+}
 
 //const zombie = new Undead('Zomb', 'Zombie');
 //console.log(zombie)

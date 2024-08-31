@@ -1,7 +1,7 @@
 import { loadUser } from '../user';
 import { httpGet } from '../http';
 import health from "../../index";
-import { Bowman, TYPES } from '../app';
+import { Bowman } from '../app';
 import { Swordsman } from '../app';
 import { Magician } from '../app';
 import { Zombie } from '../app';
@@ -105,7 +105,7 @@ test("testing Zombie", () => {
   expect(result).toEqual(ans)
 })
 
-test("testing Daemon", () => {
+test("testing Daemon1", () => {
   const result = new Daemon("Daemon", "Daemon")
   const ans = {
       name: "Daemon",
@@ -127,7 +127,7 @@ test("testing CharacterError2", () => {
   expect(() => new Character("Daemon", "Durmon")).toThrow(`Тип должен быть строкой и может принимать значения`);
 });
 
-test("testing Daemon", () => {
+test("testing Daemon2", () => {
   const result = new Daemon("Daemon", "Daemon").levelUp()
   const ans = {
       name: "Daemon",
@@ -140,7 +140,7 @@ test("testing Daemon", () => {
   expect(result).toEqual(ans)
 })
 
-test("testing Daemon", () => {
+test("testing Daemon3", () => {
   const result = new Daemon("Daemon", "Daemon").damage(1)
   const ans = {
       name: "Daemon",
@@ -154,8 +154,16 @@ test("testing Daemon", () => {
 })
 
 test("testing CharacterError3", () => {
-  const result = new Character("Daemon", "Daemon")
-  result.damage(1000)
+  const result = new Daemon("Daemon", "Daemon")
+  result.damage(165)
+  //expect(result.health).toBeGreaterThan(0);
   
-  expect(() => result.damage(100).toThrow('Game over'));
+  // Первое исключение
+  expect(() => result.damage(2)).toThrow('Game Over');
+  
+  // Второе исключение
+  expect(() => result.damage(1)).toThrow('Game Over');
+
+  // Проверка исключения повышения уровня
+  expect(() => result.levelUp()).toThrow('Нельзя повысить левел умершего');
 })
